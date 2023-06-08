@@ -49,19 +49,19 @@ func TestCycleCallRule2(t *testing.T) {
 	err := eng.Start()
 	assert.Nil(t, err)
 
-	nodeName := "R1"
+	name := "R1"
 
 	r := &Rule1{Name: 10}
 
 	props := make(nrule.PropertiesMap)
-	props[nodeName] = r
+	props[name] = r
 
-	err = eng.AddRule(nodeName, script, props)
+	err = eng.AddRule(name, script, props)
 	if err != nil {
 		fmt.Println(1111, err)
 	}
 
-	err = eng.Execute(nodeName)
+	err = eng.Execute(name)
 	if err != nil {
 		fmt.Println(3333, err)
 	}
