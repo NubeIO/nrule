@@ -6,12 +6,14 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 type Rule1 struct {
-	Name  int
-	Name2 int
-	Title string
+	Name   int
+	Name2  int
+	Title  string
+	Title2 string
 }
 
 type User struct {
@@ -30,6 +32,7 @@ func (p *Rule1) GetUser() *User {
 	if err != nil {
 		return nil
 	}
+	time.Sleep(2 * time.Second) // example of slow API call
 	return resp.Result().(*User)
 }
 
@@ -43,6 +46,7 @@ func TestCycleCallRule2(t *testing.T) {
 	R1.Name = R1.Add100()
 	R1.Name2 = 99
 	R1.Title = R1.GetUser().Title // gets the title from an API call
+	R1.Title2 = R1.Title + " hello"
 `
 
 	eng := NewRuleEngine()
@@ -69,5 +73,6 @@ func TestCycleCallRule2(t *testing.T) {
 	fmt.Println(r.Name)
 	fmt.Println(r.Name2)
 	fmt.Println(r.Title)
+	fmt.Println(r.Title2)
 
 }
