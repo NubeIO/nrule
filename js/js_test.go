@@ -32,7 +32,7 @@ func (p *Rule1) GetUser() *User {
 	if err != nil {
 		return nil
 	}
-	time.Sleep(2 * time.Second) // example of slow API call
+	time.Sleep(1 * time.Second) // example of slow API call
 	return resp.Result().(*User)
 }
 
@@ -46,7 +46,9 @@ func TestCycleCallRule2(t *testing.T) {
 	R1.Name = R1.Add100()
 	R1.Name2 = 99
 	R1.Title = R1.GetUser().Title // gets the title from an API call
-	R1.Title2 = R1.Title + " hello"
+	
+	var user = R1.GetUser()
+	R1.Title2 = user.Title + " hello"
 `
 
 	eng := NewRuleEngine()
