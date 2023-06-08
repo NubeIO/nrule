@@ -40,6 +40,10 @@ func (p *Rule1) Add100() int {
 	return p.Name + 100
 }
 
+func (p *Rule1) Print(a interface{}) {
+	fmt.Println("Print:", a)
+}
+
 func TestCycleCallRule2(t *testing.T) {
 
 	script := `
@@ -47,7 +51,11 @@ func TestCycleCallRule2(t *testing.T) {
 	R1.Name2 = 99
 	R1.Title = R1.GetUser().Title // gets the title from an API call
 	
-	var user = R1.GetUser()
+	let user = R1.GetUser()
+	R1.Print(user.Title)
+	R1.Print(user.Id)
+	R1.Print(true)
+	user.Title = "aaa"
 	R1.Title2 = user.Title + " hello"
 `
 
