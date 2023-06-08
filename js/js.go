@@ -67,7 +67,7 @@ func (r *RuleEngine) RuleCount() int {
 func (r *RuleEngine) Execute(name string) error {
 	rule, ok := r.rules[name]
 	if !ok {
-		return errors.New("rule Rule does not exist")
+		return errors.New("rule does not exist")
 	}
 	_, err := rule.vm.RunString(rule.js)
 	return err
@@ -76,7 +76,7 @@ func (r *RuleEngine) Execute(name string) error {
 func (r *RuleEngine) ModifyRule(name, script string) error {
 	rule, ok := r.rules[name]
 	if !ok {
-		return errors.New("rule Rule does not exist")
+		return errors.New("rule does not exist")
 	}
 	rule.js = script
 	return nil
