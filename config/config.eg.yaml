@@ -1,0 +1,8 @@
+server:
+  log:
+    store: false
+    level: INFO # PANIC, FATAL, ERROR, WARN, INFO, DEBUG, TRACE
+gin:
+  log:
+    store: false
+    level: debug # debug, release, test

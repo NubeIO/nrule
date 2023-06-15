@@ -15,7 +15,7 @@ func Log(i interface{}) string {
 	return fmt.Sprintf("%+v\n", i)
 }
 
-func PrintJSON(x interface{}) {
+func PrintJOSN(x interface{}) {
 	ioWriter := os.Stdout
 	w := json.NewEncoder(ioWriter)
 	w.SetIndent("", "    ")
