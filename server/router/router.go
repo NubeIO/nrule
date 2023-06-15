@@ -2,12 +2,16 @@ package router
 
 import (
 	"fmt"
+	"github.com/NubeIO/nrule/apirules"
 	"github.com/NubeIO/nrule/config"
 	"github.com/NubeIO/nrule/logger"
+	"github.com/NubeIO/nrule/rules"
 	"github.com/NubeIO/nrule/server/constants"
 	"github.com/NubeIO/nrule/server/controller"
+	"github.com/NubeIO/nrule/storage"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"io"
 	"net/http"
@@ -17,7 +21,7 @@ import (
 
 func NotFound() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		message := fmt.Sprintf("%s %s [%d]: %s", ctx.Request.Method, ctx.Request.URL, 404, "rubix-edge-bios: api not found")
+		message := fmt.Sprintf("%s %s [%d]: %s", ctx.Request.Method, ctx.Request.URL, 404, "api not found")
 		ctx.JSON(http.StatusNotFound, controller.Message{Message: message})
 	}
 }
@@ -51,13 +55,47 @@ func Setup() *gin.Engine {
 		MaxAge:                 12 * time.Hour,
 	}))
 
-	api := controller.Controller{}
+	eng := rules.NewRuleEngine()
+	err := eng.Start()
+	if err != nil {
+		logrus.Error(err)
+	}
+
+	name := "Core"
+	props := make(rules.PropertiesMap)
+	props[name] = eng
+
+	client := "Client"
+	newClient := &apirules.Client{}
+	props[client] = newClient
+
+	api := controller.Controller{
+		Rules:   eng,
+		Client:  newClient,
+		Props:   props,
+		Storage: storage.New(config.Config.GetAbsDatabaseFile()),
+	}
 
 	apiRoutes := engine.Group("/api")
 
 	ping := apiRoutes.Group("/ping")
 	{
 		ping.GET("", api.Ping)
+
+	}
+
+	rule := apiRoutes.Group("/rules")
+	{
+		rule.GET("", api.SelectAllRules)
+		rule.GET("/:uuid", api.SelectRule)
+		rule.PATCH("/:uuid", api.UpdateRule)
+		rule.DELETE("/:uuid", api.DeleteRule)
+		rule.POST("", api.AddRule)
+	}
+
+	rulesRun := apiRoutes.Group("/rules/dry")
+	{
+		rulesRun.POST("", api.Dry)
 
 	}
 
