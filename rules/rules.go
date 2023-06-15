@@ -1,10 +1,11 @@
-package js
+package rules
 
 import (
 	"errors"
-	"github.com/NubeIO/nrule"
 	"github.com/dop251/goja"
 )
+
+type PropertiesMap map[string]interface{}
 
 type Rule struct {
 	vm *goja.Runtime
@@ -14,7 +15,8 @@ type Rule struct {
 type RuleMap map[string]*Rule
 
 type RuleEngine struct {
-	rules RuleMap
+	rules  RuleMap
+	Result int
 }
 
 func NewRuleEngine() *RuleEngine {
@@ -22,16 +24,16 @@ func NewRuleEngine() *RuleEngine {
 	return re
 }
 
-func (r *RuleEngine) Start() error {
+func (inst *RuleEngine) Start() error {
 	return nil
 }
 
-func (r *RuleEngine) Stop() error {
+func (inst *RuleEngine) Stop() error {
 	return nil
 }
 
-func (r *RuleEngine) AddRule(name, script string, props nrule.PropertiesMap) error {
-	_, ok := r.rules[name]
+func (inst *RuleEngine) AddRule(name, script string, props PropertiesMap) error {
+	_, ok := inst.rules[name]
 	if ok {
 		return errors.New("rule logic already exists")
 	}
@@ -51,21 +53,21 @@ func (r *RuleEngine) AddRule(name, script string, props nrule.PropertiesMap) err
 	var rule Rule
 	rule.vm = vm
 	rule.js = script
-	r.rules[name] = &rule
+	inst.rules[name] = &rule
 	return nil
 }
 
-func (r *RuleEngine) RemoveRule(name string) error {
-	delete(r.rules, name)
+func (inst *RuleEngine) RemoveRule(name string) error {
+	delete(inst.rules, name)
 	return nil
 }
 
-func (r *RuleEngine) RuleCount() int {
-	return len(r.rules)
+func (inst *RuleEngine) RuleCount() int {
+	return len(inst.rules)
 }
 
-func (r *RuleEngine) Execute(name string) error {
-	rule, ok := r.rules[name]
+func (inst *RuleEngine) Execute(name string) error {
+	rule, ok := inst.rules[name]
 	if !ok {
 		return errors.New("rule does not exist")
 	}
@@ -73,8 +75,8 @@ func (r *RuleEngine) Execute(name string) error {
 	return err
 }
 
-func (r *RuleEngine) ModifyRule(name, script string) error {
-	rule, ok := r.rules[name]
+func (inst *RuleEngine) ModifyRule(name, script string) error {
+	rule, ok := inst.rules[name]
 	if !ok {
 		return errors.New("rule does not exist")
 	}
