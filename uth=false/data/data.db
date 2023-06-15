@@ -1,0 +1,19 @@
+*3
+$3
+set
+$16
+rql_1649a220b61a
+$100
+{"uuid":"rql_1649a220b61a","name":"test","script":"const listA = [1, 2, 3]; Client.Result = listA;"}
+*2
+$3
+del
+$16
+rql_1649a220b61a
+*3
+$3
+set
+$16
+rql_0fe942ac5419
+$100
+{"uuid":"rql_0fe942ac5419","name":"test","script":"const listA = [1, 2, 3]; Client.Result = listA;"}

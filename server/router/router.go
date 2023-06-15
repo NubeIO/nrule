@@ -30,7 +30,7 @@ func Setup() *gin.Engine {
 	engine := gin.New()
 	// Set gin access logs
 	if viper.GetBool("gin.log.store") {
-		fileLocation := fmt.Sprintf("%s/rubix-edge-wires.access.log", config.Config.GetAbsDataDir())
+		fileLocation := fmt.Sprintf("%s/rubix-rules.access.log", config.Config.GetAbsDataDir())
 		f, err := os.OpenFile(fileLocation, os.O_CREATE|os.O_WRONLY|os.O_APPEND, constants.Permission)
 		if err != nil {
 			logger.Logger.Errorf("Failed to create access log file: %v", err)
@@ -75,13 +75,11 @@ func Setup() *gin.Engine {
 		Props:   props,
 		Storage: storage.New(config.Config.GetAbsDatabaseFile()),
 	}
-
 	apiRoutes := engine.Group("/api")
 
 	ping := apiRoutes.Group("/ping")
 	{
 		ping.GET("", api.Ping)
-
 	}
 
 	rule := apiRoutes.Group("/rules")
@@ -96,7 +94,6 @@ func Setup() *gin.Engine {
 	rulesRun := apiRoutes.Group("/rules/dry")
 	{
 		rulesRun.POST("", api.Dry)
-
 	}
 
 	return engine

@@ -57,8 +57,8 @@ func (inst *Controller) Ping(c *gin.Context) {
 }
 
 type RulesBody struct {
-	Rule string `json:"rule"`
-	Name string `json:"name"`
+	Script string `json:"script"`
+	Name   string `json:"name"`
 }
 
 func (inst *Controller) Dry(c *gin.Context) {
@@ -73,7 +73,7 @@ func (inst *Controller) Dry(c *gin.Context) {
 
 	name := uuid.ShortUUID("")
 
-	err = inst.Rules.AddRule(name, body.Rule, inst.Props)
+	err = inst.Rules.AddRule(name, body.Script, inst.Props)
 	if err != nil {
 		inst.Client.Err = err
 		reposeHandler(inst.Client, nil, c)
