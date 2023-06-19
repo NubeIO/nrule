@@ -3,6 +3,7 @@
 
 # Production
 /build
+/data
 
 .idea
 # Generated files

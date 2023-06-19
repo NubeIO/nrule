@@ -17,8 +17,8 @@ var RootCmd = &cobra.Command{
 func Execute() {
 	cmd, _, err := RootCmd.Find(os.Args[1:])
 	if err == nil && cmd.Use == RootCmd.Use {
-		args := append([]string{"server", "-auth=false"}, os.Args[1:]...)
-		RootCmd.SetArgs(args)
+		//args := append([]string{"server", "-auth=false"}, os.Args[1:]...)
+		RootCmd.SetArgs(os.Args[1:])
 	}
 	if err := RootCmd.Execute(); err != nil {
 

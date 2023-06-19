@@ -68,7 +68,7 @@ func Setup() *gin.Engine {
 	client := "Client"
 	newClient := &apirules.Client{}
 	props[client] = newClient
-
+	logger.Logger.Infof("new db on location:%s", config.Config.GetAbsDatabaseFile())
 	api := controller.Controller{
 		Rules:   eng,
 		Client:  newClient,
