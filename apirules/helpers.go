@@ -6,7 +6,24 @@ import (
 	pprint "github.com/NubeIO/nrule/helpers/print"
 	"github.com/go-gota/gota/dataframe"
 	"strings"
+	"time"
 )
+
+func (p *Client) TimeUTC() time.Time {
+	return time.Now().UTC()
+}
+
+func (p *Client) TimeDate() string {
+	return time.Now().Format("2006.01.02 15:04:05")
+}
+
+func (p *Client) TimeDateDay() string {
+	return time.Now().Format("2006-01-02 15:04:05 Monday")
+}
+
+func (p *Client) Time() time.Time {
+	return time.Now()
+}
 
 func (p *Client) PrintJson(x interface{}) {
 	pprint.PrintJOSN(x)

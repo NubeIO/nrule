@@ -86,6 +86,7 @@ func Setup() *gin.Engine {
 	{
 		rule.GET("", api.SelectAllRules)
 		rule.GET("/:uuid", api.SelectRule)
+		rule.GET("/run/:uuid", api.RunExisting)
 		rule.PATCH("/:uuid", api.UpdateRule)
 		rule.DELETE("/:uuid", api.DeleteRule)
 		rule.POST("", api.AddRule)

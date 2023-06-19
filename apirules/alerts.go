@@ -2,6 +2,7 @@ package apirules
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
@@ -10,7 +11,7 @@ type Alert struct {
 	Error  string       `json:"error"`
 }
 
-func bindAlert(body any) (*model.Alert, error) {
+func alertBody(body any) (*model.Alert, error) {
 	result := &model.Alert{}
 	dbByte, err := json.Marshal(body)
 	if err != nil {
@@ -21,11 +22,11 @@ func bindAlert(body any) (*model.Alert, error) {
 }
 
 func (p *Client) AddAlert(hostIDName string, body any) *Alert {
-	b, err := bindAlert(body)
+	b, err := alertBody(body)
 	if err != nil {
 		return &Alert{
 			Result: nil,
-			Error:  errorString(err),
+			Error:  fmt.Sprintf("failed to parse body err:%s", err.Error()),
 		}
 	}
 	resp, err := cli.AddAlert(hostIDName, b)
