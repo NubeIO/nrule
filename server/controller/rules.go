@@ -4,6 +4,7 @@ import (
 	"github.com/NubeIO/nrule/helpers/uuid"
 	"github.com/NubeIO/nrule/storage"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type RulesBody struct {
@@ -53,7 +54,8 @@ func (inst *Controller) Dry(c *gin.Context) {
 }
 
 func (inst *Controller) RunExisting(c *gin.Context) {
-	resp, err := inst.Storage.SelectRule(c.Param("uuid"))
+	ruleUUID := c.Param("uuid")
+	resp, err := inst.Storage.SelectRule(ruleUUID)
 	if err != nil {
 		reposeHandler(nil, err, c)
 		return
@@ -85,6 +87,13 @@ func (inst *Controller) RunExisting(c *gin.Context) {
 		inst.Client.Err = err
 		reposeHandler(inst.Client, nil, c)
 	} else {
+		resp.LatestRunDate = time.Now().Format(time.RFC822)
+		resp, err = inst.Storage.UpdateRule(ruleUUID, resp)
+		if err != nil {
+			inst.Client.Err = err
+			reposeHandler(inst.Client, nil, c)
+			return
+		}
 		reposeHandler(inst.Client, nil, c)
 	}
 
