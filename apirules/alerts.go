@@ -30,6 +30,8 @@ func (p *Client) AddAlert(hostIDName string, body any) *Alert {
 		}
 	}
 	resp, err := cli.AddAlert(hostIDName, b)
+	fmt.Println(resp)
+	fmt.Println(err)
 	return &Alert{
 		Result: resp,
 		Error:  errorString(err),
