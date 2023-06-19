@@ -19,7 +19,7 @@ func (inst *Controller) Dry(c *gin.Context) {
 	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 		return
 	}
 
@@ -28,26 +28,26 @@ func (inst *Controller) Dry(c *gin.Context) {
 	err = inst.Rules.AddRule(name, fmt.Sprint(body.Script), inst.Props)
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	err = inst.Rules.Execute(name)
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	err = inst.Rules.RemoveRule(name)
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 	} else {
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 	}
 
 }
@@ -65,7 +65,7 @@ func (inst *Controller) RunExisting(c *gin.Context) {
 	err = inst.Rules.AddRule(name, resp.Script, inst.Props)
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 		return
 	}
 
@@ -73,24 +73,24 @@ func (inst *Controller) RunExisting(c *gin.Context) {
 
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	err = inst.Rules.RemoveRule(name)
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	if err != nil {
 		inst.Client.Err = err.Error()
-		reposeHandler(inst.Client, err, c)
+		reposeHandler(inst.Client, nil, c)
 	} else {
 		resp.LatestRunDate = time.Now().Format(time.RFC822)
 		resp, err = inst.Storage.UpdateRule(ruleUUID, resp)
 		if err != nil {
 			inst.Client.Err = err.Error()
-			reposeHandler(inst.Client, err, c)
+			reposeHandler(inst.Client, nil, c)
 			return
 		}
 		reposeHandler(inst.Client, nil, c)
