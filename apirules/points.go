@@ -2,8 +2,6 @@ package apirules
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/NubeIO/nrule/pprint"
 	"github.com/NubeIO/nubeio-rubix-lib-models-go/pkg/v1/model"
 )
 
@@ -45,8 +43,6 @@ func pointWriteBody(body any) (*model.Priority, error) {
 
 func (inst *Client) WritePointValue(hostIDName, uuid string, value *model.Priority) *Point {
 	body, err := pointWriteBody(value)
-	fmt.Println(111, err)
-	pprint.PrintJSON(body)
 	resp, err := cli.WritePointValue(hostIDName, uuid, body)
 	return &Point{
 		Result: resp,

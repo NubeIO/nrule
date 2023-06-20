@@ -14,6 +14,9 @@ type RulesBody struct {
 }
 
 func (inst *Controller) Dry(c *gin.Context) {
+	inst.Client.Err = ""
+	inst.Client.Result = nil
+	inst.Client.TimeTaken = ""
 	start := time.Now()
 	var body *RulesBody
 	err := c.ShouldBindJSON(&body)
@@ -59,10 +62,15 @@ func (inst *Controller) Dry(c *gin.Context) {
 }
 
 func (inst *Controller) RunExisting(c *gin.Context) {
+	inst.Client.Err = ""
+	inst.Client.Result = nil
+	inst.Client.TimeTaken = ""
 	start := time.Now()
 	ruleUUID := c.Param("uuid")
 	resp, err := inst.Storage.SelectRule(ruleUUID)
 	if err != nil {
+		inst.Client.Err = err.Error()
+		inst.Client.TimeTaken = time.Since(start).String()
 		reposeHandler(err, err, c)
 		return
 	}
