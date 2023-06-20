@@ -14,11 +14,12 @@ type RulesBody struct {
 }
 
 func (inst *Controller) Dry(c *gin.Context) {
-
+	start := time.Now()
 	var body *RulesBody
 	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
@@ -28,31 +29,37 @@ func (inst *Controller) Dry(c *gin.Context) {
 	err = inst.Rules.AddRule(name, fmt.Sprint(body.Script), inst.Props)
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	err = inst.Rules.Execute(name)
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	err = inst.Rules.RemoveRule(name)
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 	} else {
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 	}
 
 }
 
 func (inst *Controller) RunExisting(c *gin.Context) {
+	start := time.Now()
 	ruleUUID := c.Param("uuid")
 	resp, err := inst.Storage.SelectRule(ruleUUID)
 	if err != nil {
@@ -65,6 +72,7 @@ func (inst *Controller) RunExisting(c *gin.Context) {
 	err = inst.Rules.AddRule(name, resp.Script, inst.Props)
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
@@ -73,26 +81,31 @@ func (inst *Controller) RunExisting(c *gin.Context) {
 
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	err = inst.Rules.RemoveRule(name)
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
 	if err != nil {
 		inst.Client.Err = err.Error()
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 	} else {
 		resp.LatestRunDate = time.Now().Format(time.RFC822)
 		resp, err = inst.Storage.UpdateRule(ruleUUID, resp)
 		if err != nil {
 			inst.Client.Err = err.Error()
+			inst.Client.TimeTake = time.Since(start).String()
 			reposeHandler(inst.Client, nil, c)
 			return
 		}
+		inst.Client.TimeTake = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 	}
 
