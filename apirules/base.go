@@ -6,9 +6,9 @@ import (
 )
 
 type Client struct {
-	Result   interface{} `json:"result"`
-	Err      string      `json:"err"`
-	TimeTake string      `json:"time_take"`
+	Result    interface{} `json:"result"`
+	Err       string      `json:"err"`
+	TimeTaken string      `json:"time_taken"`
 }
 
 var cli = rubixoscli.New(&rubixoscli.Client{
