@@ -11,6 +11,11 @@ type Alert struct {
 	Error  string       `json:"error"`
 }
 
+type Alerts struct {
+	Result []model.Alert `json:"result"`
+	Error  string        `json:"error"`
+}
+
 func alertBody(body any) (*model.Alert, error) {
 	result := &model.Alert{}
 	dbByte, err := json.Marshal(body)
@@ -21,7 +26,15 @@ func alertBody(body any) (*model.Alert, error) {
 	return result, err
 }
 
-func (p *Client) AddAlert(hostIDName string, body any) *Alert {
+func (inst *Client) GetAlerts(hostIDName string) *Alerts {
+	resp, err := cli.GetAlerts()
+	return &Alerts{
+		Result: resp,
+		Error:  errorString(err),
+	}
+}
+
+func (inst *Client) AddAlert(hostIDName string, body any) *Alert {
 	b, err := alertBody(body)
 	if err != nil {
 		return &Alert{
@@ -30,8 +43,6 @@ func (p *Client) AddAlert(hostIDName string, body any) *Alert {
 		}
 	}
 	resp, err := cli.AddAlert(hostIDName, b)
-	fmt.Println(resp)
-	fmt.Println(err)
 	return &Alert{
 		Result: resp,
 		Error:  errorString(err),
