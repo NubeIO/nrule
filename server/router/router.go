@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"fmt"
 	"github.com/NubeIO/nrule/apirules"
 	"github.com/NubeIO/nrule/config"
@@ -26,7 +27,7 @@ func NotFound() gin.HandlerFunc {
 	}
 }
 
-func Setup() *gin.Engine {
+func Setup(ctx context.Context) *gin.Engine {
 	engine := gin.New()
 	// Set gin access logs
 	if viper.GetBool("gin.log.store") {
@@ -66,7 +67,17 @@ func Setup() *gin.Engine {
 	props[name] = eng
 
 	client := "RQL"
-	newClient := &apirules.Client{}
+	//ctx := context.TODO()
+
+	var newClient = &apirules.Client{
+		CTX: ctx,
+		PdfApplication: &apirules.PDFApplication{
+			PandocPath:     "/usr/share/pandoc",
+			UserHome:       "/home",
+			PandocDataDir:  "/.pandoc",
+			CommandTimeout: 10 * time.Second,
+		},
+	}
 	props[client] = newClient
 	logger.Logger.Infof("new db on location:%s", config.Config.GetAbsDatabaseFile())
 	api := controller.Controller{

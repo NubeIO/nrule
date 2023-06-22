@@ -1,14 +1,17 @@
 package apirules
 
 import (
+	"context"
 	"github.com/NubeIO/rubix-os-client/rubixoscli"
 	"github.com/NubeIO/rubix-os/installer"
 )
 
 type Client struct {
-	Return    interface{} `json:"return"`
-	Err       string      `json:"err"`
-	TimeTaken string      `json:"time_taken"`
+	Return         interface{} `json:"return"`
+	Err            string      `json:"err"`
+	TimeTaken      string      `json:"time_taken"`
+	PdfApplication *PDFApplication
+	CTX            context.Context
 }
 
 var cli = rubixoscli.New(&rubixoscli.Client{

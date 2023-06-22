@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"github.com/NubeIO/nrule/config"
 	"github.com/NubeIO/nrule/logger"
@@ -8,6 +9,7 @@ import (
 	"github.com/NubeIO/nrule/server/router"
 	"github.com/spf13/cobra"
 	"os"
+	"time"
 )
 
 var serverCmd = &cobra.Command{
@@ -27,13 +29,15 @@ func runServer(cmd *cobra.Command, args []string) {
 	}
 
 	logger.Logger.Infoln("starting rubix-edge-wires...")
-
-	r := router.Setup()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	r := router.Setup(ctx)
 
 	host := "0.0.0.0"
 	port := config.Config.GetPort()
 	logger.Logger.Infof("server is starting at %s:%s", host, port)
 	logger.Logger.Fatalf("%v", r.Run(fmt.Sprintf("%s:%s", host, port)))
+
 }
 
 func init() {
