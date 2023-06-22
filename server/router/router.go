@@ -65,7 +65,7 @@ func Setup() *gin.Engine {
 	props := make(rules.PropertiesMap)
 	props[name] = eng
 
-	client := "Client"
+	client := "RQL"
 	newClient := &apirules.Client{}
 	props[client] = newClient
 	logger.Logger.Infof("new db on location:%s", config.Config.GetAbsDatabaseFile())
