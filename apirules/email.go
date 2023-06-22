@@ -2,7 +2,6 @@ package apirules
 
 import (
 	"encoding/json"
-	"github.com/NubeIO/nrule/pprint"
 	"github.com/jordan-wright/email"
 	"github.com/labstack/gommon/log"
 	"net/smtp"
@@ -45,8 +44,6 @@ func (inst *Client) SendEmail(body any) {
 	message := parsed.Message
 	senderAddress := parsed.SenderAddress
 	password := parsed.Password
-
-	pprint.PrintJSON(parsed)
 
 	e := email.NewEmail()
 	e.From = senderAddress
