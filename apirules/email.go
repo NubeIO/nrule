@@ -2,10 +2,23 @@ package apirules
 
 import (
 	"encoding/json"
+	"github.com/NubeIO/nrule/pprint"
 	"github.com/jordan-wright/email"
 	"github.com/labstack/gommon/log"
 	"net/smtp"
 )
+
+/*
+let body = {
+  to: ["a@nube-io.com"],
+  subject: "test",
+  message: "testing",
+  senderAddress: "aa@nube-io.com",
+  password: "abc",
+};
+
+RQL.SendEmail(body);
+*/
 
 type mail struct {
 	To            []string
@@ -25,13 +38,15 @@ func emailBody(body any) (*mail, error) {
 	return result, err
 }
 
-func (inst *Client) SendEmail(body *mail) {
-	body, err := emailBody(body)
-	to := body.To
-	subject := body.Subject
-	message := body.Message
-	senderAddress := body.SenderAddress
-	password := body.Password
+func (inst *Client) SendEmail(body any) {
+	parsed, err := emailBody(body)
+	to := parsed.To
+	subject := parsed.Subject
+	message := parsed.Message
+	senderAddress := parsed.SenderAddress
+	password := parsed.Password
+
+	pprint.PrintJSON(parsed)
 
 	e := email.NewEmail()
 	e.From = senderAddress

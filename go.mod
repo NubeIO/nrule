@@ -7,11 +7,13 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.7.0
 	github.com/NubeIO/rubix-os v0.0.2
 	github.com/NubeIO/rubix-os-client v0.0.2
-	github.com/NubeIO/rubix-ui v0.0.2
 	github.com/dop251/goja v0.0.0-20230605162241-28ee0ee714f3
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-gota/gota v0.12.0
+	github.com/go-resty/resty/v2 v2.7.0
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
+	github.com/labstack/gommon v0.3.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
@@ -35,6 +37,7 @@ require (
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7 // indirect
 	github.com/NubeIO/rubix-assist v0.10.6 // indirect
 	github.com/NubeIO/rubix-registry-go v1.0.0 // indirect
+	github.com/NubeIO/rubix-ui v0.0.2 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -45,7 +48,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
-	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
@@ -69,6 +71,7 @@ require (
 	github.com/leaanthony/slicer v1.5.0 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -93,15 +96,14 @@ require (
 	github.com/tidwall/tinyqueue v0.1.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasttemplate v1.2.1 // indirect
 	github.com/wailsapp/wails/v2 v2.4.1 // indirect
-	github.com/yuin/goldmark v1.4.13 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.10.0 // indirect
-	golang.org/x/mod v0.11.0 // indirect
 	golang.org/x/net v0.11.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/text v0.10.0 // indirect
-	golang.org/x/tools v0.10.0 // indirect
 	gonum.org/v1/gonum v0.9.1 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
