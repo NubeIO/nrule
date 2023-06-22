@@ -41,3 +41,12 @@ func matchRuleUUID(uuid string) bool {
 	}
 	return false
 }
+
+func matchVarUID(uuid string) bool {
+	if len(uuid) == 16 {
+		if uuid[0:4] == "var_" {
+			return true
+		}
+	}
+	return false
+}

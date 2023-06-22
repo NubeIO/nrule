@@ -1,13 +1,32 @@
 package apirules
 
 import (
+	"encoding/json"
 	"fmt"
-	"testing"
-
 	"github.com/slack-go/slack"
 )
 
-func TestPG(t *testing.T) {
+type slackMessage struct {
+	To            []string
+	Cc            []string
+	Bcc           []string
+	Subject       string
+	Message       string
+	SenderAddress string
+	Password      string
+}
+
+func slackBody(body any) (*mail, error) {
+	result := &mail{}
+	dbByte, err := json.Marshal(body)
+	if err != nil {
+		return result, err
+	}
+	err = json.Unmarshal(dbByte, &result)
+	return result, err
+}
+
+func (inst *Client) Slack(body any) {
 	var ChannelId = "C05DNBFP1M4"
 	api := slack.New("")
 	//attachment := slack.Attachment{
@@ -26,7 +45,7 @@ func TestPG(t *testing.T) {
 
 	channelID, timestamp, err := api.PostMessage(
 		ChannelId,
-		slack.MsgOptionText("Ping failed <@UJ6T8ALCR>", false),
+		slack.MsgOptionText("<@UJ6T8ALCR> <@aidan> alert from device ABC", false),
 		//slack.MsgOptionAttachments(attachment),
 		slack.MsgOptionAsUser(true), // Add this if you want that the bot would post message as a user, otherwise it will send response using the default slackbot
 	)

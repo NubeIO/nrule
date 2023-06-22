@@ -92,6 +92,15 @@ func Setup() *gin.Engine {
 		rule.POST("", api.AddRule)
 	}
 
+	vars := apiRoutes.Group("/vars")
+	{
+		vars.GET("", api.SelectAllVariables)
+		vars.GET("/:uuid", api.SelectVariable)
+		vars.PATCH("/:uuid", api.UpdateVariable)
+		vars.DELETE("/:uuid", api.DeleteVariable)
+		vars.POST("", api.AddVariable)
+	}
+
 	rulesRun := apiRoutes.Group("/rules/dry")
 	{
 		rulesRun.POST("", api.Dry)
