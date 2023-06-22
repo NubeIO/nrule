@@ -15,7 +15,7 @@ type RulesBody struct {
 
 func (inst *Controller) Dry(c *gin.Context) {
 	inst.Client.Err = ""
-	inst.Client.Result = nil
+	inst.Client.Return = nil
 	inst.Client.TimeTaken = ""
 	start := time.Now()
 	var body *RulesBody
@@ -63,7 +63,7 @@ func (inst *Controller) Dry(c *gin.Context) {
 
 func (inst *Controller) RunExisting(c *gin.Context) {
 	inst.Client.Err = ""
-	inst.Client.Result = nil
+	inst.Client.Return = nil
 	inst.Client.TimeTaken = ""
 	start := time.Now()
 	ruleUUID := c.Param("uuid")

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/NubeIO/nrule/pprint"
 	"github.com/go-resty/resty/v2"
 	"regexp"
 	"time"
@@ -107,12 +106,8 @@ func httpBody(body any) (*HTTPBody, error) {
 }
 
 func (inst *Client) HTTPGet(body *HTTPBody) *HTTPGet {
-	b, _ := httpBody(body)
-	fmt.Println(11111)
-	pprint.PrintJSON(b)
-	fmt.Println(11111)
+	//b, _ := httpBody(body)
 	client := resty.New()
-	pprint.PrintJSON(body)
 	var resp *resty.Response
 	var err error
 	if body.Method == "GET" {

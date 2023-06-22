@@ -6,7 +6,7 @@ import (
 )
 
 type Client struct {
-	Result    interface{} `json:"result"`
+	Return    interface{} `json:"return"`
 	Err       string      `json:"err"`
 	TimeTaken string      `json:"time_taken"`
 }
