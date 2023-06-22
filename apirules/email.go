@@ -21,6 +21,8 @@ RQL.SendEmail(body);
 
 type mail struct {
 	To            []string
+	Cc            []string
+	Bcc           []string
 	Subject       string
 	Message       string
 	SenderAddress string
@@ -48,6 +50,8 @@ func (inst *Client) SendEmail(body any) {
 	e := email.NewEmail()
 	e.From = senderAddress
 	e.To = to
+	e.Cc = parsed.To
+	e.Bcc = parsed.Bcc
 	e.Subject = subject
 	e.HTML = []byte(message)
 	err = e.Send("smtp.gmail.com:587", smtp.PlainAuth("", senderAddress, password, "smtp.gmail.com"))

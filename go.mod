@@ -3,6 +3,7 @@ module github.com/NubeIO/nrule
 go 1.18
 
 require (
+	github.com/NubeDev/flow-eng v0.7.5
 	github.com/NubeIO/lib-uuid v0.0.3
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.7.0
 	github.com/NubeIO/rubix-os v0.0.2
