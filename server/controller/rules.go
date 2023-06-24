@@ -27,15 +27,24 @@ func (inst *Controller) Dry(c *gin.Context) {
 		return
 	}
 
-	name := uuid.ShortUUID("")
+	name := body.Name
+	if !inst.Rules.RuleExists(name) {
+		err = inst.Rules.AddRule(name, fmt.Sprint(body.Script), inst.Props)
+		if err != nil {
+			inst.Client.Err = err.Error()
+			inst.Client.TimeTaken = time.Since(start).String()
+			reposeHandler(inst.Client, nil, c)
+			return
+		}
+	}
 
-	err = inst.Rules.AddRule(name, fmt.Sprint(body.Script), inst.Props)
-	if err != nil {
-		inst.Client.Err = err.Error()
+	if inst.Rules.RuleLocked(name) {
+		inst.Client.Err = fmt.Sprintf("rule: %s is already being processed", name)
 		inst.Client.TimeTaken = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
+
 	err = inst.Rules.Execute(name)
 	if err != nil {
 		inst.Client.Err = err.Error()
@@ -93,13 +102,13 @@ func (inst *Controller) RunExisting(c *gin.Context) {
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
-	err = inst.Rules.RemoveRule(name)
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-		return
-	}
+	//err = inst.Rules.RemoveRule(name)
+	//if err != nil {
+	//	inst.Client.Err = err.Error()
+	//	inst.Client.TimeTaken = time.Since(start).String()
+	//	reposeHandler(inst.Client, nil, c)
+	//	return
+	//}
 	if err != nil {
 		inst.Client.Err = err.Error()
 		inst.Client.TimeTaken = time.Since(start).String()

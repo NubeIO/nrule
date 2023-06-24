@@ -8,8 +8,9 @@ import (
 type PropertiesMap map[string]interface{}
 
 type Rule struct {
-	vm *goja.Runtime
-	js string
+	vm   *goja.Runtime
+	js   string
+	lock bool
 }
 
 type RuleMap map[string]*Rule
@@ -22,14 +23,6 @@ type RuleEngine struct {
 func NewRuleEngine() *RuleEngine {
 	re := &RuleEngine{rules: RuleMap{}}
 	return re
-}
-
-func (inst *RuleEngine) Start() error {
-	return nil
-}
-
-func (inst *RuleEngine) Stop() error {
-	return nil
 }
 
 func (inst *RuleEngine) AddRule(name, script string, props PropertiesMap) error {
@@ -66,12 +59,24 @@ func (inst *RuleEngine) RuleCount() int {
 	return len(inst.rules)
 }
 
+func (inst *RuleEngine) RuleExists(name string) bool {
+	_, exists := inst.rules[name]
+	return exists
+}
+
+func (inst *RuleEngine) RuleLocked(name string) bool {
+	rule, _ := inst.rules[name]
+	return rule.lock
+}
+
 func (inst *RuleEngine) Execute(name string) error {
 	rule, ok := inst.rules[name]
+	rule.lock = true
 	if !ok {
 		return errors.New("rule does not exist")
 	}
 	_, err := rule.vm.RunString(rule.js)
+	rule.lock = false
 	return err
 }
 

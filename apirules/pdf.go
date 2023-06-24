@@ -21,24 +21,30 @@ type PDFResponse struct {
 }
 
 type PdfBody struct {
-	Input          []byte `json:"input" binding:"required"`
+	Input          string `json:"input" binding:"required"`
 	WriteToHomeDir bool   `json:"write_to_home_dir"`
 }
 
 func (inst *Client) PDF(pdfBody *PdfBody) *PingResponse {
 
-	//pprint.PrintJSON(pdfBody)
+	md := []byte(pdfBody.Input)
 
 	fmt.Println(pdfBody.WriteToHomeDir)
 
-	_, err := inst.convert(inst.CTX, pdfBody.Input, pdfBody.WriteToHomeDir)
+	_, err := inst.convert(inst.CTX, md, pdfBody.WriteToHomeDir)
 	fmt.Println(err)
 	if err != nil {
 		//return nil
 	}
+	var res string
+	if err != nil {
+		res = err.Error()
+	}
+
+	inst.Err = res
 
 	r := &PingResponse{
-		Result: nil,
+		Result: res,
 		Error:  errorString(err),
 	}
 	pprint.PrintJSON(r)

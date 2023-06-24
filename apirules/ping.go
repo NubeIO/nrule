@@ -10,7 +10,7 @@ type pingResult struct {
 }
 
 type PingResponse struct {
-	Result []pingResult
+	Result any
 	Error  string
 }
 

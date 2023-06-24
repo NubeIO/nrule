@@ -12,7 +12,6 @@ import (
 	"github.com/NubeIO/nrule/storage"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"io"
 	"net/http"
@@ -57,10 +56,10 @@ func Setup(ctx context.Context) *gin.Engine {
 	}))
 
 	eng := rules.NewRuleEngine()
-	err := eng.Start()
-	if err != nil {
-		logrus.Error(err)
-	}
+	//err := eng.Start()
+	//if err != nil {
+	//	logrus.Error(err)
+	//}
 
 	name := "Core"
 	props := make(rules.PropertiesMap)
@@ -68,23 +67,26 @@ func Setup(ctx context.Context) *gin.Engine {
 
 	client := "RQL"
 	//ctx := context.TODO()
+	logger.Logger.Infof("new db on location:%s", config.Config.GetAbsDatabaseFile())
+	newStorage := storage.New(config.Config.GetAbsDatabaseFile())
 
-	var newClient = &apirules.Client{
-		CTX: ctx,
+	newClient := &apirules.Client{
+		CTX:     ctx,
+		Storage: newStorage,
 		PdfApplication: &apirules.PDFApplication{
 			PandocPath:     "/usr/share/pandoc",
-			UserHome:       "/home",
+			UserHome:       "/home/aidan",
 			PandocDataDir:  "/.pandoc",
 			CommandTimeout: 10 * time.Second,
 		},
 	}
 	props[client] = newClient
-	logger.Logger.Infof("new db on location:%s", config.Config.GetAbsDatabaseFile())
+
 	api := controller.Controller{
 		Rules:   eng,
 		Client:  newClient,
 		Props:   props,
-		Storage: storage.New(config.Config.GetAbsDatabaseFile()),
+		Storage: newStorage,
 	}
 	apiRoutes := engine.Group("/api")
 

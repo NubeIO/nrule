@@ -2,6 +2,16 @@ package apirules
 
 import "time"
 
+func (inst *Client) SleepMs(duration int) {
+	d := time.Duration(duration)
+	time.Sleep(d * time.Millisecond)
+}
+
+func (inst *Client) Sleep(duration int) {
+	d := time.Duration(duration)
+	time.Sleep(d * time.Second)
+}
+
 func (inst *Client) TimeUTC() time.Time {
 	return time.Now().UTC()
 }
