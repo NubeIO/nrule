@@ -6,8 +6,10 @@ require (
 	github.com/NubeDev/flow-eng v0.7.5
 	github.com/NubeIO/lib-uuid v0.0.3
 	github.com/NubeIO/nubeio-rubix-lib-models-go v1.7.0
+	github.com/NubeIO/rubix-assist v0.10.6
 	github.com/NubeIO/rubix-os v0.0.2
 	github.com/NubeIO/rubix-os-client v0.0.2
+	github.com/andanhm/go-prettytime v1.1.0
 	github.com/dop251/goja v0.0.0-20230605162241-28ee0ee714f3
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
@@ -15,11 +17,13 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/labstack/gommon v0.3.1
+	github.com/rvflash/elapsed v0.3.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/slack-go/slack v0.12.2
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/tidwall/buntdb v1.2.9
+	github.com/tidwall/gjson v1.14.3
 )
 
 require (
@@ -33,7 +37,6 @@ require (
 	github.com/NubeIO/lib-ufw v0.0.3 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-auth-go v1.2.0 // indirect
 	github.com/NubeIO/nubeio-rubix-lib-helpers-go v0.2.7 // indirect
-	github.com/NubeIO/rubix-assist v0.10.6 // indirect
 	github.com/NubeIO/rubix-registry-go v1.0.0 // indirect
 	github.com/NubeIO/rubix-ui v0.0.2 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
@@ -69,7 +72,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rvflash/elapsed v0.3.0 // indirect
 	github.com/sergeymakinen/go-systemdconf/v2 v2.0.2 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/afero v1.9.5 // indirect
@@ -79,7 +81,6 @@ require (
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/tidwall/btree v1.1.0 // indirect
-	github.com/tidwall/gjson v1.14.3 // indirect
 	github.com/tidwall/grect v0.1.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect

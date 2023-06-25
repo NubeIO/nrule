@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"github.com/NubeIO/nrule/helpers/uuid"
+	"github.com/NubeIO/nrule/rules"
 	"github.com/NubeIO/nrule/storage"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -13,118 +13,160 @@ type RulesBody struct {
 	Name   string      `json:"name"`
 }
 
+//func (inst *Controller) Dry2(c *gin.Context) {
+//	inst.Client.Err = ""
+//	inst.Client.Return = nil
+//	inst.Client.TimeTaken = ""
+//	start := time.Now()
+//	var body *RulesBody
+//	err := c.ShouldBindJSON(&body)
+//	if err != nil {
+//		inst.Client.Err = err.Error()
+//		inst.Client.TimeTaken = time.Since(start).String()
+//		reposeHandler(inst.Client, nil, c)
+//		return
+//	}
+//
+//	name := body.Name
+//	if !inst.Rules.RuleExists(name) {
+//		err = inst.Rules.AddRule(name, fmt.Sprint(body.Script), inst.Props)
+//		if err != nil {
+//			inst.Client.Err = err.Error()
+//			inst.Client.TimeTaken = time.Since(start).String()
+//			reposeHandler(inst.Client, nil, c)
+//			return
+//		}
+//	}
+//
+//	if inst.Rules.RuleLocked(name) {
+//		inst.Client.Err = fmt.Sprintf("rule: %s is already being processed", name)
+//		inst.Client.TimeTaken = time.Since(start).String()
+//		reposeHandler(inst.Client, nil, c)
+//		return
+//	}
+//
+//	err = inst.Rules.Execute(name)
+//	if err != nil {
+//		inst.Client.Err = err.Error()
+//		inst.Client.TimeTaken = time.Since(start).String()
+//		reposeHandler(inst.Client, nil, c)
+//		return
+//	}
+//	err = inst.Rules.RemoveRule(name)
+//	if err != nil {
+//		inst.Client.Err = err.Error()
+//		inst.Client.TimeTaken = time.Since(start).String()
+//		reposeHandler(inst.Client, nil, c)
+//		return
+//	}
+//	if err != nil {
+//		inst.Client.Err = err.Error()
+//		inst.Client.TimeTaken = time.Since(start).String()
+//		reposeHandler(inst.Client, nil, c)
+//	} else {
+//		inst.Client.TimeTaken = time.Since(start).String()
+//		pprint.PrintJSON(inst.Client)
+//		reposeHandler(inst.Client, nil, c)
+//	}
+//
+//}
+
 func (inst *Controller) Dry(c *gin.Context) {
+	start := time.Now()
 	inst.Client.Err = ""
 	inst.Client.Return = nil
 	inst.Client.TimeTaken = ""
-	start := time.Now()
-	var body *RulesBody
+
+	var body *rules.Body
 	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
 
 	name := body.Name
-	if !inst.Rules.RuleExists(name) {
-		err = inst.Rules.AddRule(name, fmt.Sprint(body.Script), inst.Props)
-		if err != nil {
-			inst.Client.Err = err.Error()
-			inst.Client.TimeTaken = time.Since(start).String()
-			reposeHandler(inst.Client, nil, c)
-			return
-		}
-	}
+	schedule := body.Schedule
+	schedule = "10 sec"
+	script := fmt.Sprint(body.Script)
 
-	if inst.Rules.RuleLocked(name) {
-		inst.Client.Err = fmt.Sprintf("rule: %s is already being processed", name)
-		inst.Client.TimeTaken = time.Since(start).String()
+	newRule := &rules.AddRule{
+		Name:     name,
+		Script:   script,
+		Schedule: schedule,
+		Props:    inst.Props,
+	}
+	err = inst.Rules.AddRule(newRule)
+	if err != nil {
+		fmt.Println("ADD RULE Execute ERR", err)
+	}
+	value, err := inst.Rules.Execute(body.Name, inst.Props)
+	if err != nil {
+		fmt.Println("ADD RULE Execute ERR", err)
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
-
-	err = inst.Rules.Execute(name)
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-		return
-	}
-	err = inst.Rules.RemoveRule(name)
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-		return
-	}
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-	} else {
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-	}
-
+	fmt.Println("ADD RULE", value, "value", "err", err)
+	inst.Client.Return = value
+	inst.Client.TimeTaken = time.Since(start).String()
+	reposeHandler(inst.Client, nil, c)
 }
 
 func (inst *Controller) RunExisting(c *gin.Context) {
-	inst.Client.Err = ""
-	inst.Client.Return = nil
-	inst.Client.TimeTaken = ""
-	start := time.Now()
-	ruleUUID := c.Param("uuid")
-	resp, err := inst.Storage.SelectRule(ruleUUID)
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(err, err, c)
-		return
-	}
-
-	name := uuid.ShortUUID("")
-
-	err = inst.Rules.AddRule(name, resp.Script, inst.Props)
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-		return
-	}
-
-	err = inst.Rules.Execute(name)
-
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-		return
-	}
-	//err = inst.Rules.RemoveRule(name)
+	//inst.Client.Err = ""
+	//inst.Client.Return = nil
+	//inst.Client.TimeTaken = ""
+	//start := time.Now()
+	//ruleUUID := c.Param("uuid")
+	//resp, err := inst.Storage.SelectRule(ruleUUID)
+	//if err != nil {
+	//	inst.Client.Err = err.Error()
+	//	inst.Client.TimeTaken = time.Since(start).String()
+	//	reposeHandler(err, err, c)
+	//	return
+	//}
+	//
+	//name := uuid.ShortUUID("")
+	//
+	//err = inst.Rules.AddRule(name, resp.Script, inst.Props)
 	//if err != nil {
 	//	inst.Client.Err = err.Error()
 	//	inst.Client.TimeTaken = time.Since(start).String()
 	//	reposeHandler(inst.Client, nil, c)
 	//	return
 	//}
-	if err != nil {
-		inst.Client.Err = err.Error()
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-	} else {
-		resp.LatestRunDate = time.Now().Format(time.RFC822)
-		resp, err = inst.Storage.UpdateRule(ruleUUID, resp)
-		if err != nil {
-			inst.Client.Err = err.Error()
-			inst.Client.TimeTaken = time.Since(start).String()
-			reposeHandler(inst.Client, nil, c)
-			return
-		}
-		inst.Client.TimeTaken = time.Since(start).String()
-		reposeHandler(inst.Client, nil, c)
-	}
+	//
+	//err = inst.Rules.Execute(name)
+	//
+	//if err != nil {
+	//	inst.Client.Err = err.Error()
+	//	inst.Client.TimeTaken = time.Since(start).String()
+	//	reposeHandler(inst.Client, nil, c)
+	//	return
+	//}
+	////err = inst.Rules.RemoveRule(name)
+	////if err != nil {
+	////	inst.Client.Err = err.Error()
+	////	inst.Client.TimeTaken = time.Since(start).String()
+	////	reposeHandler(inst.Client, nil, c)
+	////	return
+	////}
+	//if err != nil {
+	//	inst.Client.Err = err.Error()
+	//	inst.Client.TimeTaken = time.Since(start).String()
+	//	reposeHandler(inst.Client, nil, c)
+	//} else {
+	//	resp.LatestRunDate = time.Now().Format(time.RFC822)
+	//	resp, err = inst.Storage.UpdateRule(ruleUUID, resp)
+	//	if err != nil {
+	//		inst.Client.Err = err.Error()
+	//		inst.Client.TimeTaken = time.Since(start).String()
+	//		reposeHandler(inst.Client, nil, c)
+	//		return
+	//	}
+	//	inst.Client.TimeTaken = time.Since(start).String()
+	//	reposeHandler(inst.Client, nil, c)
+	//}
 
 }
 

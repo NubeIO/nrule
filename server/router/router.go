@@ -56,17 +56,11 @@ func Setup(ctx context.Context) *gin.Engine {
 	}))
 
 	eng := rules.NewRuleEngine()
-	//err := eng.Start()
-	//if err != nil {
-	//	logrus.Error(err)
-	//}
 
 	name := "Core"
 	props := make(rules.PropertiesMap)
 	props[name] = eng
-
 	client := "RQL"
-	//ctx := context.TODO()
 	logger.Logger.Infof("new db on location:%s", config.Config.GetAbsDatabaseFile())
 	newStorage := storage.New(config.Config.GetAbsDatabaseFile())
 
@@ -88,6 +82,9 @@ func Setup(ctx context.Context) *gin.Engine {
 		Props:   props,
 		Storage: newStorage,
 	}
+
+	go api.Loop()
+
 	apiRoutes := engine.Group("/api")
 
 	ping := apiRoutes.Group("/ping")
