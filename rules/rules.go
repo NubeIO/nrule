@@ -47,6 +47,7 @@ type Body struct {
 	Script   interface{} `json:"script"`
 	Name     string      `json:"name"`
 	Schedule string      `json:"schedule"`
+	Enable   bool        `json:"enable"`
 }
 
 type AddRule struct {

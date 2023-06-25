@@ -210,6 +210,9 @@ func (inst *Controller) UpdateRule(c *gin.Context) {
 		reposeHandler(nil, err, c)
 		return
 	}
+	if body.Name == "Sandbox" { // ADDED FRO TESTING REMOVE
+		body.Enable = true
+	}
 	resp, err := inst.Storage.UpdateRule(c.Param("uuid"), body)
 	if err != nil {
 		reposeHandler(nil, err, c)

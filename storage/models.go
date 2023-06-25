@@ -5,6 +5,8 @@ type RQLRule struct {
 	Name          string `json:"name"`
 	LatestRunDate string `json:"latest_run_date"`
 	Script        string `json:"script"`
+	Schedule      string `json:"schedule"`
+	Enable        bool   `json:"enable"`
 }
 
 type RQLVariables struct {
