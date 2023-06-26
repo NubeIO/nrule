@@ -87,7 +87,7 @@ func (inst *Controller) Dry(c *gin.Context) {
 	}
 
 	name := uuid.ShortUUID("")
-	schedule := ""
+	schedule := "1 sec"
 	script := fmt.Sprint(body.Script)
 
 	newRule := &rules.AddRule{
@@ -114,60 +114,6 @@ func (inst *Controller) Dry(c *gin.Context) {
 }
 
 func (inst *Controller) RunExisting(c *gin.Context) {
-	//inst.Client.Err = ""
-	//inst.Client.Return = nil
-	//inst.Client.TimeTaken = ""
-	//start := time.Now()
-	//ruleUUID := c.Param("uuid")
-	//resp, err := inst.Storage.SelectRule(ruleUUID)
-	//if err != nil {
-	//	inst.Client.Err = err.Error()
-	//	inst.Client.TimeTaken = time.Since(start).String()
-	//	reposeHandler(err, err, c)
-	//	return
-	//}
-	//
-	//name := uuid.ShortUUID("")
-	//
-	//err = inst.Rules.AddRule(name, resp.Script, inst.Props)
-	//if err != nil {
-	//	inst.Client.Err = err.Error()
-	//	inst.Client.TimeTaken = time.Since(start).String()
-	//	reposeHandler(inst.Client, nil, c)
-	//	return
-	//}
-	//
-	//err = inst.Rules.Execute(name)
-	//
-	//if err != nil {
-	//	inst.Client.Err = err.Error()
-	//	inst.Client.TimeTaken = time.Since(start).String()
-	//	reposeHandler(inst.Client, nil, c)
-	//	return
-	//}
-	////err = inst.Rules.RemoveRule(name)
-	////if err != nil {
-	////	inst.Client.Err = err.Error()
-	////	inst.Client.TimeTaken = time.Since(start).String()
-	////	reposeHandler(inst.Client, nil, c)
-	////	return
-	////}
-	//if err != nil {
-	//	inst.Client.Err = err.Error()
-	//	inst.Client.TimeTaken = time.Since(start).String()
-	//	reposeHandler(inst.Client, nil, c)
-	//} else {
-	//	resp.LatestRunDate = time.Now().Format(time.RFC822)
-	//	resp, err = inst.Storage.UpdateRule(ruleUUID, resp)
-	//	if err != nil {
-	//		inst.Client.Err = err.Error()
-	//		inst.Client.TimeTaken = time.Since(start).String()
-	//		reposeHandler(inst.Client, nil, c)
-	//		return
-	//	}
-	//	inst.Client.TimeTaken = time.Since(start).String()
-	//	reposeHandler(inst.Client, nil, c)
-	//}
 
 }
 
@@ -210,9 +156,6 @@ func (inst *Controller) UpdateRule(c *gin.Context) {
 	if err != nil {
 		reposeHandler(nil, err, c)
 		return
-	}
-	if body.Name == "Sandbox" { // ADDED FRO TESTING REMOVE
-		body.Enable = true
 	}
 	resp, err := inst.Storage.UpdateRule(c.Param("uuid"), body)
 	if err != nil {
