@@ -47,7 +47,7 @@ func (inst *Controller) Loop() {
 			}
 			if canRun != nil && rule.Enable {
 				if canRun.CanRun {
-					execute, err := inst.Rules.Execute(rule.Name, inst.Props)
+					execute, err := inst.Rules.Execute(rule.Name, inst.Props, true)
 					if err != nil {
 						fmt.Println("RAN RULE ERR", err)
 						//return

@@ -175,14 +175,14 @@ func (inst *RuleEngine) CanExecute(name string) (*CanExecute, error) {
 	return out, nil
 }
 
-func (inst *RuleEngine) Execute(name string, props PropertiesMap) (goja.Value, error) {
+func (inst *RuleEngine) Execute(name string, props PropertiesMap, reset bool) (goja.Value, error) {
 	start := time.Now()
 	rule, ok := inst.rules[name]
-	rule.lock = true
-	rule.State = Processing
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("rule:%s does not exist", name))
 	}
+	rule.lock = true
+	rule.State = Processing
 	v, err := rule.vm.RunString(rule.script)
 	rule.lock = false
 	rule.TimeTaken = time.Since(start).String()
@@ -190,8 +190,19 @@ func (inst *RuleEngine) Execute(name string, props PropertiesMap) (goja.Value, e
 	rule.TimeCompleted = time.Now()
 	nextTime, err := ttime.AdjustTime(rule.TimeCompleted, rule.Schedule)
 	rule.NextTimeScheduled = nextTime
-	err = inst.resetRule(name, props)
+	if reset {
+		err = inst.resetRule(name, props)
+	}
 	return v, err
+}
+
+func (inst *RuleEngine) ExecuteAndRemove(name string, props PropertiesMap, reset bool) (goja.Value, error) {
+	execute, err := inst.Execute(name, props, reset)
+	if err != nil {
+		return nil, err
+	}
+	err = inst.RemoveRule(name)
+	return execute, err
 }
 
 func (inst *RuleEngine) ModifyRule(name, script string) error {

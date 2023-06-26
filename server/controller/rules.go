@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/NubeIO/lib-uuid/uuid"
 	"github.com/NubeIO/nrule/rules"
 	"github.com/NubeIO/nrule/storage"
 	"github.com/gin-gonic/gin"
@@ -85,9 +86,8 @@ func (inst *Controller) Dry(c *gin.Context) {
 		return
 	}
 
-	name := body.Name
-	schedule := body.Schedule
-	schedule = "10 sec"
+	name := uuid.ShortUUID("")
+	schedule := ""
 	script := fmt.Sprint(body.Script)
 
 	newRule := &rules.AddRule{
@@ -98,15 +98,16 @@ func (inst *Controller) Dry(c *gin.Context) {
 	}
 	err = inst.Rules.AddRule(newRule)
 	if err != nil {
-		fmt.Println("ADD RULE Execute ERR", err)
-	}
-	value, err := inst.Rules.Execute(body.Name, inst.Props)
-	if err != nil {
-		fmt.Println("ADD RULE Execute ERR", err)
+		inst.Client.Err = err.Error()
 		reposeHandler(inst.Client, nil, c)
 		return
 	}
-	fmt.Println("ADD RULE", value, "value", "err", err)
+	value, err := inst.Rules.ExecuteAndRemove(name, inst.Props, false)
+	if err != nil {
+		inst.Client.Err = err.Error()
+		reposeHandler(inst.Client, nil, c)
+		return
+	}
 	inst.Client.Return = value
 	inst.Client.TimeTaken = time.Since(start).String()
 	reposeHandler(inst.Client, nil, c)

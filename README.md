@@ -13,20 +13,16 @@ http://0.0.0.0:1666/api/ping
 
 
 ```js
-function timestamp(){
-  function pad(n) {return n<10 ? "0"+n : n}
-  d=new Date()
-  dash="-"
-  colon=":"
-  return d.getFullYear()+dash+
-  pad(d.getMonth()+1)+dash+
-  pad(d.getDate())+" "+
-  pad(d.getHours())+colon+
-  pad(d.getMinutes())+colon+
-  pad(d.getSeconds())
-}
+let a = 22
+let out = {}
+
+out.uuid = `math: ${a*10} call RQL func date: ${RQL.TimeDate()}`
+
+RQL.Return = Client.ToString(out)
+```
 
 
+```js
 let body = {
     host_uuid: "hos_c4be792c63c74454",
     type: "ping",
@@ -35,12 +31,12 @@ let body = {
 
 let out = {}
 
-let result = Client.AddAlert(body.host_uuid, body)
+let result = RQL.AddAlert(body.host_uuid, body)
 
 
-out.uuid = `added new alert date: ${timestamp()} id: ${result.Result.UUID}`
+out.uuid = `added new alert date: ${RQL.TimeDate()} id: ${result.Result.UUID}`
 
-Client.Result = Client.ToString(out)
+RQL.Return = Client.ToString(out)
 ```
 
 
