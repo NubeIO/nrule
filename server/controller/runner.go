@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/NubeIO/nrule/pprint"
 	"github.com/NubeIO/nrule/rules"
 	"github.com/NubeIO/nrule/storage"
 	"github.com/labstack/gommon/log"
@@ -12,7 +13,6 @@ func (inst *Controller) addAll(allRules []storage.RQLRule) {
 	for _, rule := range allRules {
 		name := rule.Name
 		schedule := rule.Schedule
-		schedule = "10 sec"
 		script := fmt.Sprint(rule.Script)
 
 		newRule := &rules.AddRule{
@@ -31,7 +31,7 @@ func (inst *Controller) addAll(allRules []storage.RQLRule) {
 func (inst *Controller) Loop() {
 	var firstLoop = true
 	for {
-		allRules, err := inst.Storage.SelectAllRules()
+		allRules, err := inst.Storage.SelectAllEnabledRules()
 		if err != nil {
 			//return
 		}
@@ -40,19 +40,21 @@ func (inst *Controller) Loop() {
 		}
 
 		for _, rule := range allRules {
-			//fmt.Println("rule loop name: ", rule.Name)
+
 			canRun, err := inst.Rules.CanExecute(rule.Name)
 			if err != nil {
 				//fmt.Println(err)
 			}
 			if canRun != nil && rule.Enable {
+				//fmt.Println("rule loop name: ", rule.Script)
 				if canRun.CanRun {
-					execute, err := inst.Rules.Execute(rule.Name, inst.Props, true)
+					execute, err := inst.Rules.ExecuteWithScript(rule.Name, inst.Props, rule.Script, rule.Schedule)
 					if err != nil {
 						fmt.Println("RAN RULE ERR", err)
 						//return
 					}
-					fmt.Println("RAN RULE", execute)
+					fmt.Println("RAN RULE", execute, rule.Name, rule.Schedule, canRun.CanRun)
+					pprint.PrintJSON(execute)
 				}
 			} else {
 
@@ -60,7 +62,7 @@ func (inst *Controller) Loop() {
 
 		}
 		firstLoop = false
-		time.Sleep(5 * time.Second)
+		time.Sleep(1 * time.Second)
 	}
 
 }

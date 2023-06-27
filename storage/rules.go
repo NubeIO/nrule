@@ -97,3 +97,26 @@ func (inst *db) SelectAllRules() ([]RQLRule, error) {
 	}
 	return resp, nil
 }
+
+func (inst *db) SelectAllEnabledRules() ([]RQLRule, error) {
+	var resp []RQLRule
+	err := inst.DB.View(func(tx *buntdb.Tx) error {
+		err := tx.Ascend("", func(key, value string) bool {
+			var data RQLRule
+			err := json.Unmarshal([]byte(value), &data)
+			if err != nil {
+				return false
+			}
+			if matchRuleUUID(data.UUID) && data.Enable {
+				resp = append(resp, data)
+			}
+			return true
+		})
+		return err
+	})
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		return []RQLRule{}, err
+	}
+	return resp, nil
+}

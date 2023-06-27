@@ -175,7 +175,32 @@ func (inst *RuleEngine) CanExecute(name string) (*CanExecute, error) {
 	return out, nil
 }
 
+func (inst *RuleEngine) ExecuteAndRemove(name string, props PropertiesMap, reset bool) (goja.Value, error) {
+	execute, err := inst.execute(name, props, reset)
+	if err != nil {
+		return nil, err
+	}
+	err = inst.RemoveRule(name)
+	return execute, err
+}
+
+func (inst *RuleEngine) ExecuteWithScript(name string, props PropertiesMap, script, schedule string) (goja.Value, error) {
+	err := inst.modifyRuleScript(name, script)
+	if err != nil {
+		return nil, err
+	}
+	err = inst.modifyRuleSchedule(name, schedule)
+	if err != nil {
+		return nil, err
+	}
+	return inst.execute(name, props, true)
+}
+
 func (inst *RuleEngine) Execute(name string, props PropertiesMap, reset bool) (goja.Value, error) {
+	return inst.execute(name, props, reset)
+}
+
+func (inst *RuleEngine) execute(name string, props PropertiesMap, reset bool) (goja.Value, error) {
 	start := time.Now()
 	rule, ok := inst.rules[name]
 	if !ok {
@@ -196,20 +221,20 @@ func (inst *RuleEngine) Execute(name string, props PropertiesMap, reset bool) (g
 	return v, err
 }
 
-func (inst *RuleEngine) ExecuteAndRemove(name string, props PropertiesMap, reset bool) (goja.Value, error) {
-	execute, err := inst.Execute(name, props, reset)
-	if err != nil {
-		return nil, err
-	}
-	err = inst.RemoveRule(name)
-	return execute, err
-}
-
-func (inst *RuleEngine) ModifyRule(name, script string) error {
+func (inst *RuleEngine) modifyRuleScript(name, script string) error {
 	rule, ok := inst.rules[name]
 	if !ok {
 		return errors.New(fmt.Sprintf("rule:%s does not exist", name))
 	}
 	rule.script = script
+	return nil
+}
+
+func (inst *RuleEngine) modifyRuleSchedule(name, schedule string) error {
+	rule, ok := inst.rules[name]
+	if !ok {
+		return errors.New(fmt.Sprintf("rule:%s does not exist", name))
+	}
+	rule.Schedule = schedule
 	return nil
 }
