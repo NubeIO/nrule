@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"github.com/NubeIO/nrule/pprint"
-	"github.com/NubeIO/nrule/rules"
 	"github.com/NubeIO/nrule/storage"
 	"github.com/labstack/gommon/log"
 	"time"
@@ -15,13 +14,12 @@ func (inst *Controller) addAll(allRules []storage.RQLRule) {
 		schedule := rule.Schedule
 		script := fmt.Sprint(rule.Script)
 
-		newRule := &rules.AddRule{
+		newRule := &storage.RQLRule{
 			Name:     name,
 			Script:   script,
 			Schedule: schedule,
-			Props:    inst.Props,
 		}
-		err := inst.Rules.AddRule(newRule)
+		err := inst.Rules.AddRule(newRule, inst.Props)
 		if err != nil {
 			log.Info(fmt.Sprintf("%s", err.Error()))
 		}

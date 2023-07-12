@@ -90,13 +90,12 @@ func (inst *Controller) Dry(c *gin.Context) {
 	schedule := "1 sec"
 	script := fmt.Sprint(body.Script)
 
-	newRule := &rules.AddRule{
+	newRule := &storage.RQLRule{
 		Name:     name,
 		Script:   script,
 		Schedule: schedule,
-		Props:    inst.Props,
 	}
-	err = inst.Rules.AddRule(newRule)
+	err = inst.Rules.AddRule(newRule, inst.Props)
 	if err != nil {
 		inst.Client.Err = err.Error()
 		reposeHandler(inst.Client, nil, c)
@@ -143,6 +142,11 @@ func (inst *Controller) AddRule(c *gin.Context) {
 		return
 	}
 	resp, err := inst.Storage.AddRule(body)
+	if err != nil {
+		reposeHandler(nil, err, c)
+		return
+	}
+	err = inst.Rules.AddRule(body, inst.Props)
 	if err != nil {
 		reposeHandler(nil, err, c)
 		return

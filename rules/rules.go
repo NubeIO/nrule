@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/NubeIO/nrule/helpers/ttime"
+	"github.com/NubeIO/nrule/storage"
 	"github.com/dop251/goja"
 	"time"
 )
@@ -57,10 +58,9 @@ type AddRule struct {
 	Props    PropertiesMap
 }
 
-func (inst *RuleEngine) AddRule(body *AddRule) error {
+func (inst *RuleEngine) AddRule(body *storage.RQLRule, props PropertiesMap) error {
 	name := body.Name
 	script := body.Script
-	props := body.Props
 	sch := body.Schedule
 	if inst.RuleLocked(name) {
 		return errors.New(fmt.Sprintf("rule:%s is already being processed", name))

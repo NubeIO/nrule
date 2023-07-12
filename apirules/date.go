@@ -1,6 +1,8 @@
 package apirules
 
-import "time"
+import (
+	"time"
+)
 
 func (inst *Client) SleepMs(duration int) {
 	d := time.Duration(duration)
@@ -18,6 +20,10 @@ func (inst *Client) TimeUTC() time.Time {
 
 func (inst *Client) TimeDate() string {
 	return time.Now().Format("2006.01.02 15:04:05")
+}
+
+func (inst *Client) TimeWithMS() string {
+	return time.Now().Format("15:04:05.000") // 2006.01.02
 }
 
 func (inst *Client) Time() string {
